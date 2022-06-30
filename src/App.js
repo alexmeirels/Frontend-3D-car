@@ -2,17 +2,80 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import { getStopPointCoordinate, getGpsPosition, getGpsLength } from './utils/dataHandler'
+
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWxleG1laXJlbHMiLCJhIjoiY2w1MGF0YzZwMGtxaTNwcWwwbjFjZWxldCJ9.NuJ9ynxJsImQYRschzqUkg';
 
 
 function App() {
+  
+  const points = getStopPointCoordinate(0).map((e) => {
+    return {long:e[0], late:e[1]}  
+  })
+
+  
 
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-70.9);
-  const [lat, setLat] = useState(42.35);
+  const [lng, setLng] = useState(points[0].long);
+  const [lat, setLat] = useState(points[0].late);
   const [zoom, setZoom] = useState(9);
+  const [time, setTime] = useState(0);
+
+  
+  const geojson = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [points[0].long, points[0].late]
+        },
+        properties: {
+          title: 'Mapbox',
+          description: 'Initial'
+        }
+      },
+      {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [points[1].long, points[1].late]
+        },
+        properties: {
+          title: 'Mapbox',
+          description: 'End'
+        }
+      }
+    ]
+  };
+
+  useEffect(() => {
+    setInterval(() => {
+      if(time < getGpsLength(0))
+        setTime(prevCount => prevCount + 1);
+      
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    if(getGpsPosition(0, time)){
+      const newPosition = {
+        type: "NewPosition",
+        coordinates: [getGpsPosition(0, time).longitude, getGpsPosition(0, time).latitude]
+  
+      }
+      console.log(newPosition.coordinates)
+      // mudar marcação do carro.
+  
+       map.current && new mapboxgl.Marker().setLngLat(newPosition.coordinates).addTo(map.current);
+    }
+    
+  }, [time])
+  
+  //console.log(points[0].long, points[0].late)
 
   useEffect(() => {
     if (!map.current) return; // wait for map to initialize
@@ -21,7 +84,7 @@ function App() {
       setLat(map.current.getCenter().lat.toFixed(4));
       setZoom(map.current.getZoom().toFixed(2));
     });
-  });
+  },);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -29,9 +92,18 @@ function App() {
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v11',
       center: [lng, lat],
-      zoom: zoom
+      zoom: zoom,
     });
+    
   });
+
+  useEffect(() => {
+    for (const feature of geojson.features) {
+      new mapboxgl.Marker().setLngLat(feature.geometry.coordinates).addTo(map.current);
+    }
+  }, [])
+  
+  
 
   return (
       <div>
