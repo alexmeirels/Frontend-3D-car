@@ -6,10 +6,18 @@ import {
   getGpsLength,
 } from "./utils/dataHandler";
 
+import { useTranslation } from "react-i18next";
+
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYWxleG1laXJlbHMiLCJhIjoiY2w1MGF0YzZwMGtxaTNwcWwwbjFjZWxldCJ9.NuJ9ynxJsImQYRschzqUkg";
 
 function App() {
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (language) => {
+    i18n.changeLanguage(language);
+  };
+
   const points = getStopPointCoordinate(0).map((e) => {
     return { long: e[0], late: e[1] };
   });
@@ -116,6 +124,17 @@ function App() {
         Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
       </div>
       <div ref={mapContainer} className="map-container" />
+      <div className="App">
+        <button onClick={() => changeLanguage("en")}>EN</button>
+        <button onClick={() => changeLanguage("pt")}>PT</button>
+        <button onClick={() => changeLanguage("es")}>ES</button>
+        <hr />
+        <div>
+          <h1>{t("title")}</h1>
+        </div>
+        <div>{t("description.part1")}</div>
+        <div>{t("description.part2")}</div>
+      </div>
     </div>
   );
 }
