@@ -1,7 +1,14 @@
 {
-    "title": "bueno vieno",
+    "title": "Elija la ruta deseada",
     "description": {
-      "part1": "To get started, edit <1>src/App.js</1> and save to reload.",
+      "part1": "Seleccione el idioma deseado",
       "part2": "Switch language between english and german using buttons above."
+    },
+    "routes": {
+      "routes1": "rutas1",
+      "routes2": "rutas2",
+      "routes3": "rutas3",
+      "routes4": "rutas4",
+      "routes5": "rutas5"
     }
   }

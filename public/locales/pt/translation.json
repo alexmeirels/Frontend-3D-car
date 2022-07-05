@@ -1,7 +1,14 @@
 {
-    "title": "Bem vindo",
+    "title": "Escolha a rota desejada",
     "description": {
-      "part1": "To get started, edit <1>src/App.js</1> and save to reload.",
+      "part1": "Selecione o idioma desejado",
       "part2": "Switch language between english and german using buttons above."
+    },
+    "routes": {
+      "routes1": "rota1",
+      "routes2": "rota2",
+      "routes3": "rota3",
+      "routes4": "rota4",
+      "routes5": "rota5"
     }
   }
